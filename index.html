@@ -39,17 +39,20 @@
     position: fixed; top: 0; left: 0;
     pointer-events: none;
     z-index: 9999;
-    transition: transform 0.15s ease;
+    will-change: transform;
+    transition: width 0.15s, height 0.15s;
     mix-blend-mode: screen;
+    box-shadow: 0 0 10px var(--accent), 0 0 20px var(--accent);
   }
   .cursor-ring {
     width: 36px; height: 36px;
-    border: 1px solid rgba(0,229,255,0.4);
+    border: 1.5px solid rgba(0,229,255,0.4);
     border-radius: 50%;
     position: fixed; top: 0; left: 0;
     pointer-events: none;
     z-index: 9998;
-    transition: transform 0.35s ease, width 0.2s, height 0.2s;
+    will-change: transform;
+    transition: width 0.2s ease, height 0.2s ease, border-color 0.2s ease;
   }
 
   /* Noise overlay */
@@ -823,10 +826,12 @@
   const cursor = document.getElementById('cursor');
   const ring = document.getElementById('cursorRing');
   let mx = 0, my = 0, rx = 0, ry = 0;
+  let isHovered = false;
 
   document.addEventListener('mousemove', e => {
     mx = e.clientX; my = e.clientY;
-    cursor.style.transform = `translate(${mx - 6}px, ${my - 6}px)`;
+    const scale = isHovered ? ' scale(1.8)' : '';
+    cursor.style.transform = `translate(${mx - 6}px, ${my - 6}px)${scale}`;
   });
 
   function animateRing() {
@@ -839,11 +844,16 @@
 
   document.querySelectorAll('a, button, .pill, .project-card, .skill-card').forEach(el => {
     el.addEventListener('mouseenter', () => {
-      cursor.style.transform += ' scale(1.5)';
-      ring.style.width = '50px'; ring.style.height = '50px';
+      isHovered = true;
+      cursor.style.transform = `translate(${mx - 6}px, ${my - 6}px) scale(1.8)`;
+      ring.style.width = '54px'; ring.style.height = '54px';
+      ring.style.borderColor = 'rgba(0,229,255,0.7)';
     });
     el.addEventListener('mouseleave', () => {
+      isHovered = false;
+      cursor.style.transform = `translate(${mx - 6}px, ${my - 6}px)`;
       ring.style.width = '36px'; ring.style.height = '36px';
+      ring.style.borderColor = 'rgba(0,229,255,0.4)';
     });
   });
 
