@@ -1,0 +1,864 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Anuruddha Bandara — QA Engineer</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --surface: #11111a;
+    --surface2: #181825;
+    --accent: #00e5ff;
+    --accent2: #7c3aed;
+    --accent3: #10b981;
+    --text: #e8e8f0;
+    --muted: #6b6b85;
+    --border: rgba(255,255,255,0.07);
+  }
+
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  /* Custom cursor */
+  .cursor {
+    width: 12px; height: 12px;
+    background: var(--accent);
+    border-radius: 50%;
+    position: fixed; top: 0; left: 0;
+    pointer-events: none;
+    z-index: 9999;
+    transition: transform 0.15s ease;
+    mix-blend-mode: screen;
+  }
+  .cursor-ring {
+    width: 36px; height: 36px;
+    border: 1px solid rgba(0,229,255,0.4);
+    border-radius: 50%;
+    position: fixed; top: 0; left: 0;
+    pointer-events: none;
+    z-index: 9998;
+    transition: transform 0.35s ease, width 0.2s, height 0.2s;
+  }
+
+  /* Noise overlay */
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none; z-index: 1; opacity: 0.4;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; width: 100%; z-index: 100;
+    padding: 1.5rem 4rem;
+    display: flex; justify-content: space-between; align-items: center;
+    backdrop-filter: blur(20px);
+    background: rgba(10,10,15,0.7);
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-logo {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800; font-size: 1.1rem;
+    letter-spacing: 0.05em;
+    color: var(--accent);
+  }
+  .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+  .nav-links a {
+    color: var(--muted); text-decoration: none;
+    font-size: 0.85rem; letter-spacing: 0.1em; text-transform: uppercase;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--accent); }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: grid; grid-template-columns: 1fr 1fr;
+    align-items: center;
+    padding: 8rem 4rem 4rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero-bg-circle {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(120px);
+    pointer-events: none;
+  }
+  .hero-bg-circle:nth-child(1) {
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(0,229,255,0.08), transparent 70%);
+    top: -100px; right: -100px;
+    animation: floatA 8s ease-in-out infinite;
+  }
+  .hero-bg-circle:nth-child(2) {
+    width: 400px; height: 400px;
+    background: radial-gradient(circle, rgba(124,58,237,0.1), transparent 70%);
+    bottom: 0; left: 200px;
+    animation: floatB 10s ease-in-out infinite;
+  }
+  @keyframes floatA { 0%,100%{transform:translateY(0)} 50%{transform:translateY(30px)} }
+  @keyframes floatB { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-20px)} }
+
+  .hero-content { position: relative; z-index: 2; }
+  .hero-tag {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    font-size: 0.75rem; letter-spacing: 0.15em; text-transform: uppercase;
+    color: var(--accent); margin-bottom: 1.5rem;
+  }
+  .hero-tag::before {
+    content: ''; width: 30px; height: 1px; background: var(--accent);
+  }
+  .hero-name {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(3rem, 5vw, 5rem);
+    font-weight: 800; line-height: 1.05;
+    letter-spacing: -0.02em;
+    margin-bottom: 0.5rem;
+  }
+  .hero-name span { color: var(--accent); }
+  .hero-role {
+    font-size: 1.1rem; color: var(--muted);
+    margin-bottom: 2rem;
+    font-weight: 300;
+  }
+  .hero-bio {
+    font-size: 0.95rem; line-height: 1.8;
+    color: rgba(232,232,240,0.7);
+    max-width: 480px; margin-bottom: 2.5rem;
+  }
+  .hero-cta { display: flex; gap: 1rem; flex-wrap: wrap; }
+  .btn {
+    padding: 0.75rem 1.8rem;
+    border-radius: 4px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.85rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    cursor: none;
+    transition: all 0.2s;
+    text-decoration: none;
+  }
+  .btn-primary {
+    background: var(--accent);
+    color: #000;
+    border: none;
+    font-weight: 500;
+  }
+  .btn-primary:hover { background: #fff; transform: translateY(-2px); }
+  .btn-outline {
+    background: transparent;
+    color: var(--text);
+    border: 1px solid var(--border);
+  }
+  .btn-outline:hover { border-color: var(--accent); color: var(--accent); transform: translateY(-2px); }
+
+  .hero-visual {
+    position: relative; z-index: 2;
+    display: flex; justify-content: center; align-items: center;
+  }
+  .hero-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 2.5rem;
+    width: 320px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero-card::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--accent2), var(--accent), var(--accent3));
+  }
+  .avatar-placeholder {
+    width: 80px; height: 80px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent2), var(--accent));
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Syne', sans-serif;
+    font-size: 1.8rem; font-weight: 800; color: #fff;
+    margin-bottom: 1.2rem;
+  }
+  .card-name {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.1rem; font-weight: 700;
+    margin-bottom: 0.2rem;
+  }
+  .card-role { font-size: 0.8rem; color: var(--accent); margin-bottom: 1.5rem; }
+  .card-stats {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+  .stat {
+    background: var(--surface2);
+    border-radius: 8px;
+    padding: 0.8rem;
+    border: 1px solid var(--border);
+  }
+  .stat-val {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.4rem; font-weight: 700;
+    color: var(--accent);
+  }
+  .stat-label { font-size: 0.7rem; color: var(--muted); margin-top: 0.2rem; }
+  .status-dot {
+    display: inline-flex; align-items: center; gap: 0.4rem;
+    font-size: 0.75rem; color: var(--accent3);
+    margin-top: 1.2rem;
+  }
+  .status-dot::before {
+    content: ''; width: 6px; height: 6px;
+    border-radius: 50%; background: var(--accent3);
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+  /* SECTIONS */
+  section { padding: 6rem 4rem; }
+  .section-header { margin-bottom: 4rem; }
+  .section-num {
+    font-size: 0.7rem; letter-spacing: 0.2em; color: var(--accent);
+    text-transform: uppercase; margin-bottom: 0.5rem;
+  }
+  .section-title {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(2rem, 3vw, 2.8rem);
+    font-weight: 800; letter-spacing: -0.02em;
+  }
+
+  /* EXPERIENCE */
+  .experience { background: var(--surface); }
+  .timeline { position: relative; }
+  .timeline::before {
+    content: ''; position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 1px; background: var(--border);
+  }
+  .timeline-item {
+    padding: 0 0 3rem 2.5rem;
+    position: relative;
+    opacity: 0; transform: translateX(-20px);
+    transition: all 0.5s ease;
+  }
+  .timeline-item.visible { opacity: 1; transform: translateX(0); }
+  .timeline-dot {
+    position: absolute; left: -5px; top: 6px;
+    width: 10px; height: 10px;
+    border-radius: 50%; background: var(--accent);
+    box-shadow: 0 0 12px var(--accent);
+  }
+  .tl-date {
+    font-size: 0.75rem; color: var(--accent);
+    letter-spacing: 0.1em; text-transform: uppercase;
+    margin-bottom: 0.3rem;
+  }
+  .tl-role {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.1rem; font-weight: 700;
+    margin-bottom: 0.2rem;
+  }
+  .tl-company {
+    font-size: 0.85rem; color: var(--muted);
+    margin-bottom: 1rem;
+  }
+  .tl-tags { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 1rem; }
+  .tag {
+    background: rgba(0,229,255,0.08);
+    color: var(--accent);
+    border: 1px solid rgba(0,229,255,0.2);
+    padding: 0.2rem 0.7rem;
+    border-radius: 20px;
+    font-size: 0.7rem;
+    letter-spacing: 0.05em;
+  }
+  .tag.purple {
+    background: rgba(124,58,237,0.1);
+    color: #a78bfa;
+    border-color: rgba(124,58,237,0.25);
+  }
+  .tl-bullets { list-style: none; }
+  .tl-bullets li {
+    font-size: 0.875rem; color: rgba(232,232,240,0.65);
+    padding: 0.25rem 0; padding-left: 1rem;
+    position: relative;
+  }
+  .tl-bullets li::before {
+    content: '→'; position: absolute; left: 0;
+    color: var(--accent3); font-size: 0.7rem;
+  }
+
+  /* SKILLS */
+  .skills-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5rem;
+  }
+  .skill-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.8rem;
+    transition: border-color 0.2s, transform 0.2s;
+    opacity: 0; transform: translateY(20px);
+    transition: opacity 0.5s, transform 0.5s, border-color 0.2s;
+  }
+  .skill-card.visible { opacity: 1; transform: translateY(0); }
+  .skill-card:hover { border-color: rgba(0,229,255,0.3); transform: translateY(-4px); }
+  .skill-card-icon {
+    font-size: 1.5rem; margin-bottom: 1rem;
+  }
+  .skill-card-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 0.9rem; font-weight: 700;
+    letter-spacing: 0.05em; text-transform: uppercase;
+    color: var(--muted); margin-bottom: 1rem;
+  }
+  .skill-pills { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+  .pill {
+    background: var(--surface2);
+    color: var(--text);
+    padding: 0.3rem 0.8rem;
+    border-radius: 4px;
+    font-size: 0.78rem;
+    border: 1px solid var(--border);
+    transition: all 0.2s;
+  }
+  .pill:hover {
+    background: rgba(0,229,255,0.1);
+    border-color: rgba(0,229,255,0.3);
+    color: var(--accent);
+  }
+
+  /* PROJECTS */
+  .projects { background: var(--surface); }
+  .projects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 1.5rem;
+  }
+  .project-card {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 2rem;
+    transition: all 0.3s;
+    opacity: 0; transform: translateY(20px);
+    position: relative; overflow: hidden;
+  }
+  .project-card.visible { opacity: 1; transform: translateY(0); }
+  .project-card::after {
+    content: '';
+    position: absolute; bottom: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--accent2), var(--accent));
+    transform: scaleX(0); transform-origin: left;
+    transition: transform 0.3s;
+  }
+  .project-card:hover { border-color: rgba(0,229,255,0.2); transform: translateY(-4px); }
+  .project-card:hover::after { transform: scaleX(1); }
+  .project-icon { font-size: 2rem; margin-bottom: 1rem; }
+  .project-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 1rem; font-weight: 700;
+    margin-bottom: 0.6rem;
+  }
+  .project-desc {
+    font-size: 0.85rem; color: var(--muted);
+    line-height: 1.7; margin-bottom: 1.2rem;
+  }
+
+  /* CERT & EDU */
+  .cert-grid {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+  }
+  .cert-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 2rem;
+    display: flex; gap: 1.2rem; align-items: flex-start;
+    opacity: 0; transform: translateY(20px);
+    transition: opacity 0.5s, transform 0.5s;
+  }
+  .cert-card.visible { opacity: 1; transform: translateY(0); }
+  .cert-icon {
+    width: 48px; height: 48px; border-radius: 10px;
+    background: linear-gradient(135deg, var(--accent2), var(--accent));
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.2rem; flex-shrink: 0;
+  }
+  .cert-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 0.95rem; font-weight: 700;
+    margin-bottom: 0.3rem;
+  }
+  .cert-sub { font-size: 0.8rem; color: var(--muted); }
+
+  /* CONTACT */
+  .contact { background: var(--surface); }
+  .contact-inner {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 4rem; align-items: start;
+  }
+  .contact-text .section-title { margin-bottom: 1rem; }
+  .contact-text p {
+    color: var(--muted); line-height: 1.8;
+    font-size: 0.95rem; margin-bottom: 2rem;
+  }
+  .contact-links { display: flex; flex-direction: column; gap: 0.8rem; }
+  .contact-link {
+    display: flex; align-items: center; gap: 1rem;
+    color: var(--text); text-decoration: none;
+    font-size: 0.9rem;
+    padding: 0.8rem 1rem;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    transition: all 0.2s;
+  }
+  .contact-link:hover {
+    border-color: rgba(0,229,255,0.3);
+    color: var(--accent);
+    background: rgba(0,229,255,0.04);
+    transform: translateX(4px);
+  }
+  .contact-link-icon {
+    width: 36px; height: 36px;
+    background: var(--surface2);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1rem; flex-shrink: 0;
+  }
+
+  .contact-form { display: flex; flex-direction: column; gap: 1rem; }
+  .form-group { display: flex; flex-direction: column; gap: 0.4rem; }
+  .form-group label {
+    font-size: 0.75rem; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--muted);
+  }
+  .form-group input, .form-group textarea {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.85rem 1rem;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    outline: none;
+    transition: border-color 0.2s;
+    resize: none;
+  }
+  .form-group input:focus, .form-group textarea:focus {
+    border-color: rgba(0,229,255,0.4);
+  }
+  .form-group textarea { height: 120px; }
+
+  /* FOOTER */
+  footer {
+    padding: 2rem 4rem;
+    border-top: 1px solid var(--border);
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 0.8rem; color: var(--muted);
+  }
+
+  /* Scroll animations */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .hero-content > * {
+    animation: fadeUp 0.7s ease forwards;
+    opacity: 0;
+  }
+  .hero-content > *:nth-child(1) { animation-delay: 0.1s; }
+  .hero-content > *:nth-child(2) { animation-delay: 0.25s; }
+  .hero-content > *:nth-child(3) { animation-delay: 0.4s; }
+  .hero-content > *:nth-child(4) { animation-delay: 0.55s; }
+  .hero-content > *:nth-child(5) { animation-delay: 0.7s; }
+  .hero-visual {
+    animation: fadeUp 0.8s 0.5s ease forwards;
+    opacity: 0;
+  }
+
+  @media(max-width: 900px) {
+    nav { padding: 1.2rem 2rem; }
+    .nav-links { display: none; }
+    .hero { grid-template-columns: 1fr; padding: 7rem 2rem 3rem; }
+    .hero-visual { display: none; }
+    section { padding: 4rem 2rem; }
+    .cert-grid, .contact-inner { grid-template-columns: 1fr; }
+    footer { flex-direction: column; gap: 0.5rem; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">AB.</div>
+  <ul class="nav-links">
+    <li><a href="#experience">Experience</a></li>
+    <li><a href="#skills">Skills</a></li>
+    <li><a href="#projects">Projects</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="home">
+  <div class="hero-bg-circle"></div>
+  <div class="hero-bg-circle"></div>
+
+  <div class="hero-content">
+    <div class="hero-tag">Available for opportunities</div>
+    <h1 class="hero-name">Anuruddha<br/><span>Bandara</span></h1>
+    <p class="hero-role">Software Quality Assurance Engineer</p>
+    <p class="hero-bio">An adaptable, self-motivated QA Engineer with a BSc (Hons) in Information Technology. Bringing 3+ years of QA expertise and 1 year of full-stack development experience, committed to delivering high-quality software solutions.</p>
+    <div class="hero-cta">
+      <a href="#contact" class="btn btn-primary">Get in Touch</a>
+      <a href="#experience" class="btn btn-outline">View Experience</a>
+    </div>
+  </div>
+
+  <div class="hero-visual">
+    <div class="hero-card">
+      <div class="avatar-placeholder">AB</div>
+      <div class="card-name">Anuruddha Bandara</div>
+      <div class="card-role">QA Engineer · CTFL Certified</div>
+      <div class="card-stats">
+        <div class="stat">
+          <div class="stat-val">3+</div>
+          <div class="stat-label">Years QA</div>
+        </div>
+        <div class="stat">
+          <div class="stat-val">1+</div>
+          <div class="stat-label">Years Dev</div>
+        </div>
+        <div class="stat">
+          <div class="stat-val">5+</div>
+          <div class="stat-label">Projects</div>
+        </div>
+        <div class="stat">
+          <div class="stat-val">ISTQB</div>
+          <div class="stat-label">Certified</div>
+        </div>
+      </div>
+      <div class="status-dot">Currently @ Pristine Solutions</div>
+    </div>
+  </div>
+</section>
+
+<!-- EXPERIENCE -->
+<section class="experience" id="experience">
+  <div class="section-header">
+    <div class="section-num">01 / Experience</div>
+    <h2 class="section-title">Career Journey</h2>
+  </div>
+  <div class="timeline">
+
+    <div class="timeline-item">
+      <div class="timeline-dot"></div>
+      <div class="tl-date">May 2023 — Present</div>
+      <div class="tl-role">Quality Assurance Engineer</div>
+      <div class="tl-company">Pristine Solutions (Pvt.) Ltd, Sri Lanka</div>
+      <div class="tl-tags">
+        <span class="tag">SAP</span><span class="tag">Selenium</span><span class="tag">Azure DevOps</span>
+        <span class="tag">Postman</span><span class="tag">HANA</span><span class="tag">Agile</span>
+      </div>
+      <ul class="tl-bullets">
+        <li>Web, mobile & automation testing using Selenium</li>
+        <li>SAP Addon testing & API testing using Postman</li>
+        <li>Collaborated with R&D team and groomed interns</li>
+        <li>Designed, reviewed & executed test cases and scenarios</li>
+        <li>Generated release notes and bug summary reports for management</li>
+      </ul>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-dot"></div>
+      <div class="tl-date">Nov 2022 — May 2023</div>
+      <div class="tl-role">Trainee Quality Assurance Engineer</div>
+      <div class="tl-company">Pristine Solutions (Pvt.) Ltd, Sri Lanka</div>
+      <div class="tl-tags">
+        <span class="tag">SAP</span><span class="tag">JIRA</span><span class="tag">GitHub</span>
+        <span class="tag">MySQL</span><span class="tag">MSSQL</span>
+      </div>
+      <ul class="tl-bullets">
+        <li>Frontend, backend, web & mobile testing</li>
+        <li>SAP Addon testing and test case execution</li>
+        <li>Generated release notes and bug summary reports</li>
+      </ul>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-dot"></div>
+      <div class="tl-date">Jan 2022 — Jul 2022</div>
+      <div class="tl-role">Associate Software Engineer (Fullstack)</div>
+      <div class="tl-company">Zincat Technology PVT Ltd, Sri Lanka</div>
+      <div class="tl-tags">
+        <span class="tag purple">Angular</span><span class="tag purple">Spring Boot</span>
+        <span class="tag purple">GitLab</span><span class="tag purple">PostgreSQL</span>
+      </div>
+      <ul class="tl-bullets">
+        <li>Implemented UIs and full-stack functionalities</li>
+        <li>API testing using Postman</li>
+        <li>Project management with JIRA</li>
+      </ul>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-dot"></div>
+      <div class="tl-date">Jul 2021 — Jan 2022</div>
+      <div class="tl-role">Trainee Software Engineer (Fullstack)</div>
+      <div class="tl-company">Zincat Technology PVT Ltd, Sri Lanka</div>
+      <div class="tl-tags">
+        <span class="tag purple">Angular</span><span class="tag purple">Spring Boot</span>
+        <span class="tag purple">Java</span><span class="tag purple">MySQL</span>
+      </div>
+      <ul class="tl-bullets">
+        <li>Full stack web development</li>
+        <li>Implemented UIs and functionalities</li>
+      </ul>
+    </div>
+
+  </div>
+</section>
+
+<!-- SKILLS -->
+<section id="skills">
+  <div class="section-header">
+    <div class="section-num">02 / Skills</div>
+    <h2 class="section-title">Technical Expertise</h2>
+  </div>
+  <div class="skills-grid">
+    <div class="skill-card">
+      <div class="skill-card-icon">🧪</div>
+      <div class="skill-card-title">QA & Testing</div>
+      <div class="skill-pills">
+        <span class="pill">Selenium</span><span class="pill">TestNG</span><span class="pill">Maven</span>
+        <span class="pill">POM</span><span class="pill">JMeter</span><span class="pill">Postman</span>
+        <span class="pill">SAP Testing</span>
+      </div>
+    </div>
+    <div class="skill-card">
+      <div class="skill-card-icon">💻</div>
+      <div class="skill-card-title">Development</div>
+      <div class="skill-pills">
+        <span class="pill">Angular</span><span class="pill">Spring Boot</span><span class="pill">Java</span>
+        <span class="pill">HTML</span><span class="pill">CSS</span><span class="pill">PHP</span>
+      </div>
+    </div>
+    <div class="skill-card">
+      <div class="skill-card-icon">🗄️</div>
+      <div class="skill-card-title">Databases</div>
+      <div class="skill-pills">
+        <span class="pill">MySQL</span><span class="pill">MSSQL</span>
+        <span class="pill">HANA</span><span class="pill">PostgreSQL</span>
+      </div>
+    </div>
+    <div class="skill-card">
+      <div class="skill-card-icon">🛠️</div>
+      <div class="skill-card-title">Tools & Platforms</div>
+      <div class="skill-pills">
+        <span class="pill">GitHub</span><span class="pill">GitLab</span><span class="pill">JIRA</span>
+        <span class="pill">Azure DevOps</span><span class="pill">SAP</span><span class="pill">Android Studio</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<section class="projects" id="projects">
+  <div class="section-header">
+    <div class="section-num">03 / Projects</div>
+    <h2 class="section-title">Research & Projects</h2>
+  </div>
+  <div class="projects-grid">
+
+    <div class="project-card">
+      <div class="project-icon">🧠</div>
+      <div class="project-title">Interactive Mobile Solution for Dysgraphia</div>
+      <div class="project-desc">An Android-based app using mobile gaming activities to help children suffering from Dysgraphia in Sri Lanka develop their writing ability.</div>
+      <div class="tl-tags">
+        <span class="tag">Android Studio</span><span class="tag">Python</span>
+        <span class="tag">Java</span><span class="tag">Firebase</span><span class="tag">Octave</span>
+      </div>
+    </div>
+
+    <div class="project-card">
+      <div class="project-icon">🩸</div>
+      <div class="project-title">Blood Donation Bank Application</div>
+      <div class="project-desc">Android and web-based platform facilitating blood donation and requests, connecting donors and recipients in need efficiently.</div>
+      <div class="tl-tags">
+        <span class="tag">PHP</span><span class="tag">MySQL</span>
+        <span class="tag">Bootstrap</span><span class="tag">Android Studio</span>
+      </div>
+    </div>
+
+    <div class="project-card">
+      <div class="project-icon">🏨</div>
+      <div class="project-title">Housekeeping Management System</div>
+      <div class="project-desc">Automated standalone housekeeping management system developed for Hotel Ganga Addara in Kandy, streamlining daily operations.</div>
+      <div class="tl-tags">
+        <span class="tag">Java</span><span class="tag">MySQL</span>
+      </div>
+    </div>
+
+    <div class="project-card">
+      <div class="project-icon">🚗</div>
+      <div class="project-title">Plus Car Rental System</div>
+      <div class="project-desc">Full-featured web application for vehicle rental management, allowing users to browse and book vehicles with an intuitive interface.</div>
+      <div class="tl-tags">
+        <span class="tag">PHP</span><span class="tag">MySQL</span><span class="tag">Bootstrap</span>
+      </div>
+    </div>
+
+    <div class="project-card">
+      <div class="project-icon">🎓</div>
+      <div class="project-title">Student Information System</div>
+      <div class="project-desc">Standalone system for comprehensive student information management, including records, enrollment data, and academic details.</div>
+      <div class="tl-tags">
+        <span class="tag">Java</span><span class="tag">MySQL</span>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- CERTIFICATIONS & EDUCATION -->
+<section id="education">
+  <div class="section-header">
+    <div class="section-num">04 / Education</div>
+    <h2 class="section-title">Credentials</h2>
+  </div>
+  <div class="cert-grid">
+    <div class="cert-card">
+      <div class="cert-icon">🎓</div>
+      <div>
+        <div class="cert-title">BSc Special (Hons) in Information Technology</div>
+        <div class="cert-sub">SLIIT — Sri Lanka Institute of Information Technology, Malabe · Completed Feb 2020</div>
+      </div>
+    </div>
+    <div class="cert-card">
+      <div class="cert-icon">📜</div>
+      <div>
+        <div class="cert-title">Certified Tester Foundation Level (CTFL)</div>
+        <div class="cert-sub">International Software Testing Qualifications Board (ISTQB)</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section class="contact" id="contact">
+  <div class="contact-inner">
+    <div class="contact-text">
+      <div class="section-num">05 / Contact</div>
+      <h2 class="section-title">Let's Connect</h2>
+      <p>Have an opportunity or project in mind? I'd love to hear from you. Reach out through any of the channels below.</p>
+      <div class="contact-links">
+        <a href="tel:+94766363401" class="contact-link">
+          <div class="contact-link-icon">📞</div>
+          +94 766 363 401
+        </a>
+        <a href="mailto:anuruddhabandara06@gmail.com" class="contact-link">
+          <div class="contact-link-icon">✉️</div>
+          anuruddhabandara06@gmail.com
+        </a>
+        <a href="https://www.linkedin.com/in/anuruddha-bandara-216352193" target="_blank" class="contact-link">
+          <div class="contact-link-icon">💼</div>
+          linkedin.com/in/anuruddha-bandara
+        </a>
+        <a href="https://github.com/Anuruddha00" target="_blank" class="contact-link">
+          <div class="contact-link-icon">🐙</div>
+          github.com/Anuruddha00
+        </a>
+      </div>
+    </div>
+
+    <div>
+      <div class="contact-form">
+        <div class="form-group">
+          <label>Your Name</label>
+          <input type="text" placeholder="John Doe"/>
+        </div>
+        <div class="form-group">
+          <label>Email Address</label>
+          <input type="email" placeholder="john@example.com"/>
+        </div>
+        <div class="form-group">
+          <label>Message</label>
+          <textarea placeholder="Tell me about your project or opportunity..."></textarea>
+        </div>
+        <button class="btn btn-primary" style="width:fit-content" onclick="alert('Message sent! (Connect to a backend to enable this)')">Send Message</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <span>© 2025 Anuruddha Bandara</span>
+  <span>QA Engineer · Kandy, Sri Lanka</span>
+</footer>
+
+<script>
+  // Custom cursor
+  const cursor = document.getElementById('cursor');
+  const ring = document.getElementById('cursorRing');
+  let mx = 0, my = 0, rx = 0, ry = 0;
+
+  document.addEventListener('mousemove', e => {
+    mx = e.clientX; my = e.clientY;
+    cursor.style.transform = `translate(${mx - 6}px, ${my - 6}px)`;
+  });
+
+  function animateRing() {
+    rx += (mx - rx - 18) * 0.12;
+    ry += (my - ry - 18) * 0.12;
+    ring.style.transform = `translate(${rx}px, ${ry}px)`;
+    requestAnimationFrame(animateRing);
+  }
+  animateRing();
+
+  document.querySelectorAll('a, button, .pill, .project-card, .skill-card').forEach(el => {
+    el.addEventListener('mouseenter', () => {
+      cursor.style.transform += ' scale(1.5)';
+      ring.style.width = '50px'; ring.style.height = '50px';
+    });
+    el.addEventListener('mouseleave', () => {
+      ring.style.width = '36px'; ring.style.height = '36px';
+    });
+  });
+
+  // Scroll reveal
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => entry.target.classList.add('visible'), i * 80);
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.timeline-item, .skill-card, .project-card, .cert-card').forEach(el => {
+    observer.observe(el);
+  });
+</script>
+</body>
+</html>
